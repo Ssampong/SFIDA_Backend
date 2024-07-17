@@ -1,0 +1,236 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "Challenge API",
+        "version": "1.0.0",
+        "description": "API documentation for Challenge application"
+    },
+    "servers": [
+        {
+            "url": "http://192.168.0.46:3000"
+        }
+    ],
+    "tags": [
+        {
+            "name": "Challenges",
+            "description": "The challenges managing API"
+        }
+    ],
+    "paths": {
+        "/api/challenges": {
+            "get": {
+                "summary": "Returns the list of all the challenges",
+                "responses": {
+                    "200": {
+                        "description": "The list of the challenges",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Challenge"
+                                    }
+                                },
+                                "example": [
+                                    {
+                                        "id": 1,
+                                        "title": "Sample Challenge",
+                                        "content": "This is a sample challenge.",
+                                        "image_path": "uploads/challenges/sample.jpg",
+                                        "imagePath": "http://192.168.0.46:3000/uploads/challenges/sample.jpg"
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "summary": "Create a new challenge",
+                "requestBody": {
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "type": "object",
+                                "required": [
+                                    "title",
+                                    "content"
+                                ],
+                                "properties": {
+                                    "title": {
+                                        "type": "string"
+                                    },
+                                    "content": {
+                                        "type": "string"
+                                    },
+                                    "image": {
+                                        "type": "string",
+                                        "format": "binary"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "The challenge was successfully created",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Challenge"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Some server error"
+                    }
+                }
+            }
+        },
+        "/api/challenges/{id}": {
+            "get": {
+                "summary": "Get the challenge by id",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "description": "The challenge id"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The challenge description by id",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ChallengeDetails"
+                                },
+                                "example": {
+                                    "challenge": {
+                                        "id": 1,
+                                        "title": "Sample Challenge",
+                                        "content": "This is a sample challenge.",
+                                        "image_path": "uploads/challenges/sample.jpg",
+                                        "imagePath": "http://192.168.0.46:3000/uploads/challenges/sample.jpg"
+                                    },
+                                    "certifications": [],
+                                    "notices": []
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "The challenge was not found"
+                    },
+                    "500": {
+                        "description": "Some error happened"
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "Challenge": {
+                "type": "object",
+                "required": [
+                    "title",
+                    "content"
+                ],
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "description": "The auto-generated id of the challenge"
+                    },
+                    "title": {
+                        "type": "string",
+                        "description": "The title of the challenge"
+                    },
+                    "content": {
+                        "type": "string",
+                        "description": "The content of the challenge"
+                    },
+                    "image_path": {
+                        "type": "string",
+                        "description": "The path to the challenge image"
+                    },
+                    "imagePath": {
+                        "type": "string",
+                        "description": "URL to access the image associated with the challenge"
+                    }
+                }
+            },
+            "ChallengeDetails": {
+                "type": "object",
+                "properties": {
+                    "challenge": {
+                        "$ref": "#/components/schemas/Challenge"
+                    },
+                    "certifications": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/Certification"
+                        }
+                    },
+                    "notices": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/Notice"
+                        }
+                    }
+                }
+            },
+            "Certification": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "integer"
+                    },
+                    "challenge_id": {
+                        "type": "integer"
+                    },
+                    "title": {
+                        "type": "string"
+                    },
+                    "content": {
+                        "type": "string"
+                    },
+                    "image_path": {
+                        "type": "string"
+                    },
+                    "imagePath": {
+                        "type": "string",
+                        "description": "URL to access the image associated with the certification"
+                    }
+                }
+            },
+            "Notice": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "integer"
+                    },
+                    "challenge_id": {
+                        "type": "integer"
+                    },
+                    "content": {
+                        "type": "string"
+                    },
+                    "image_path": {
+                        "type": "string"
+                    },
+                    "imagePath": {
+                        "type": "string",
+                        "description": "URL to access the image associated with the notice"
+                    }
+                }
+            }
+        }
+    }
+}
